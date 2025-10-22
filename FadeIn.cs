@@ -9,8 +9,8 @@ public partial class FadeIn : Node2D {
 			this.fadeIn = true;
 			var player1 = new AudioStreamPlayer2D();
 			var player2 = new AudioStreamPlayer2D();
-			player1.Stream = AudioStreamOggVorbis.LoadFromFile("res://checkmate.ogg");
-			player2.Stream = AudioStreamOggVorbis.LoadFromFile("res://lost-Piano.ogg");
+			player1.Stream = GD.Load<AudioStreamOggVorbis>("res://checkmate.ogg");
+			player2.Stream = GD.Load<AudioStreamOggVorbis>("res://lost-Piano.ogg");
 			this.AddChild(player1);
 			this.AddChild(player2);
 			player1.Play();
