@@ -1,0 +1,62 @@
+[gd_scene load_steps=11 format=3 uid="uid://bmpjlvndpbobp"]
+
+[ext_resource type="Shader" uid="uid://baw4nnjud5t2u" path="res://chessboard.gdshader" id="1_guywq"]
+[ext_resource type="Script" uid="uid://bt4k2hnd0tdcl" path="res://BoardViewManager.cs" id="1_p4xb6"]
+[ext_resource type="Script" uid="uid://d3kqm8svsu082" path="res://AnnotationManager.cs" id="3_01178"]
+[ext_resource type="Script" uid="uid://1svwqk4lbm5j" path="res://FadeIn.cs" id="4_6cddq"]
+[ext_resource type="Texture2D" uid="uid://dtp4phte3os0" path="res://checkmate.png" id="4_24de6"]
+[ext_resource type="FontFile" uid="uid://csa2yl8vsdygd" path="res://fonts/Cardo-Regular.ttf" id="5_r1grq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p4xb6"]
+shader = ExtResource("1_guywq")
+shader_parameter/num_cells = 8
+shader_parameter/light_square = Color(0.92396677, 0.970936, 0.893543, 1)
+shader_parameter/dark_square = Color(0.07087421, 0.2056323, 0.22893974, 1)
+
+[sub_resource type="Gradient" id="Gradient_01178"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_24de6"]
+gradient = SubResource("Gradient_01178")
+width = 1
+
+[sub_resource type="LabelSettings" id="LabelSettings_6cddq"]
+font = ExtResource("5_r1grq")
+font_size = 100
+font_color = Color(0.6797768, 0.038808882, 0, 1)
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 14
+shadow_color = Color(0, 0, 0, 0.28235295)
+
+[node name="ChessBoard" type="Node2D"]
+z_index = 5
+texture_filter = 6
+script = ExtResource("1_p4xb6")
+
+[node name="ChessBoardSprite" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_p4xb6")
+position = Vector2(564, 320)
+scale = Vector2(668.1778, 641.6514)
+texture = SubResource("GradientTexture1D_24de6")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(574, 320)
+offset = Vector2(0.095, 0.515)
+
+[node name="AnnotationManager" type="Node2D" parent="."]
+script = ExtResource("3_01178")
+
+[node name="CheckmateBlind" type="Node2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(600, 335)
+script = ExtResource("4_6cddq")
+
+[node name="Checkmate" type="Sprite2D" parent="CheckmateBlind"]
+texture = ExtResource("4_24de6")
+
+[node name="Label" type="Label" parent="CheckmateBlind"]
+offset_left = -475.0
+offset_top = -77.0
+offset_right = 412.0
+offset_bottom = 60.0
+text = "C H E C K M A T E"
+label_settings = SubResource("LabelSettings_6cddq")
