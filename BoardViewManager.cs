@@ -13,6 +13,7 @@ public partial class BoardViewManager : Node2D {
 	public Dictionary<Vector2I, PieceSprite> positionToSprite = new();
 	public Vector2I selectedSquare = new Vector2I(-1, -1);
 	public List<Vector2I> legalSquares;
+	private Vector2I boardOrientation = new Vector2I(1, -1);
 	
 	public void BaseSetup() {
 		gameState.SetAt(0, 0, new Rook(true));
@@ -52,7 +53,7 @@ public partial class BoardViewManager : Node2D {
 			circles[i++] = new CircleAnnotation() {
 				color = Color.Color8(125, 3, 9, 200),
 				filled = true,
-				position = (new Vector2( move.Y+0.5f, move.X+0.5f)/boardSize)-Vector2.One*0.5f,
+				position = GetViewportBoardPosition(move),
 				radius = 0.03f
 			};
 		}
@@ -60,6 +61,11 @@ public partial class BoardViewManager : Node2D {
 		annotationManager.circles = circles;
 		annotationManager.QueueRedraw();
 	}
+	private void SwitchOrientation() {
+		this.boardOrientation *= -1;
+		this.RepositionSprites();
+	}
+		this.SwitchOrientation();
 	
 	private void Select(int x, int y) {
 		var piece = gameState.GetAt(x, y);
@@ -68,6 +74,7 @@ public partial class BoardViewManager : Node2D {
 
 		foreach (var specialMove in gameState.specialMoves) {
 			if (specialMove.from == this.selectedSquare && specialMove.to == square) {
+				this.SwitchOrientation();
 				gameState.RunSpecialMove(specialMove);
 				foreach (var (from, to) in specialMove.difference) {
 					if (to == -Vector2I.One) {
@@ -107,6 +114,7 @@ public partial class BoardViewManager : Node2D {
 			if (gameState.checkmate) {
 				this.GameOver();
 			}
+			this.SwitchOrientation();
 			this.Move(this.selectedSquare, square);
 		}
 		this.ResetSelection();
