@@ -91,6 +91,8 @@ public abstract class Piece {
 	public bool hasMoved;
 	public bool isWhite;
 
+	public Piece() { }
+	
 	protected Piece(bool isWhite) {
 		this.isWhite = isWhite;
 		this.hasMoved = false;
@@ -123,6 +125,7 @@ public class Pawn: Piece {
 	public Pawn(bool isWhite) : base(isWhite) {
 	}
 
+	public Pawn() { }
 	
 	public override CompressedTexture2D GetTexture() {
 		return isWhite? whiteTexture : blackTexture;
@@ -171,6 +174,7 @@ public class Knight: Piece {
 	public Knight(bool isWhite) : base(isWhite) {
 	}
 
+	public Knight() { }
 	
 	public override CompressedTexture2D GetTexture() {
 		return isWhite? whiteTexture : blackTexture;
@@ -199,6 +203,7 @@ public class Bishop: Piece {
 	public Bishop(bool isWhite) : base(isWhite) {
 	}
 
+	public Bishop() { }
 	
 	public override CompressedTexture2D GetTexture() {
 		return isWhite? whiteTexture : blackTexture;
@@ -226,6 +231,8 @@ public class Rook : Piece {
 	public Rook(bool isWhite) : base(isWhite) {
 	}
 
+	public Rook() {}
+	
 	public override List<MoveCandidate> GetObstructingMoveCandidates(Vector2I position, int boardSize) {
 		List<MoveCandidate> candidates = new();
 		candidates.Add(MoveRules.Line(0, 1, position, boardSize));
@@ -248,6 +255,8 @@ public class King : Piece {
 	public King(bool isWhite) : base(isWhite) {
 	}
 
+	public King() {}
+	
 	public override List<MoveCandidate> GetObstructingMoveCandidates(Vector2I position, int boardSize) {
 		List<MoveCandidate> candidates = new();
 		candidates.Add(MoveRules.Line(0, 1, position, boardSize, obstructable: false, maxIterations: 1));
@@ -275,6 +284,8 @@ public class Queen : Piece {
 	public Queen(bool isWhite) : base(isWhite) {
 	}
 
+	public Queen() {}
+	
 	public override List<MoveCandidate> GetObstructingMoveCandidates(Vector2I position, int boardSize) {
 		List<MoveCandidate> candidates = new();
 		candidates.Add(MoveRules.Line(1, 1, position, boardSize));

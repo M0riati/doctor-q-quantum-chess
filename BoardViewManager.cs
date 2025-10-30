@@ -1,9 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using doctorqquantumchess;
 
 public partial class BoardViewManager : Node2D {
-
+	private static readonly Type[] PROMOTION_TYPES = [typeof(Queen), typeof(Knight), typeof(Bishop), typeof(Rook)];
+	
+	
 	public GameState gameState;
 	
 	public int boardSize = 8;
@@ -43,6 +46,7 @@ public partial class BoardViewManager : Node2D {
 	private void ResetSelection() {
 		this.selectedSquare = new Vector2I(-1, -1);
 		this.legalSquares = new();
+		PromotionMenu.CancelPromotion();
 		NotifyAnnotationManager();
 	}
 	
@@ -126,6 +130,20 @@ public partial class BoardViewManager : Node2D {
 			return;
 		}
 		else if (legalSquares.Contains(square)) {
+			if (this.gameState.GetAt(selectedSquare) is Pawn pawn) {
+				if ((pawn.isWhite && square.X == boardSize-1) || (!pawn.isWhite && square.X == 0)) {
+					PromotionMenu promotionMenu = new();
+					promotionMenu.Init(PROMOTION_TYPES, pawn.isWhite);
+					promotionMenu.OnSubmit += (Type t) => { this.ConcludePromotionMove(this.selectedSquare, square, t); };
+					this.chessBoardSprite.AddChild(promotionMenu);
+					promotionMenu.SetPosition(this.GetGlobalMousePosition());
+					promotionMenu.TopLevel = true;
+					promotionMenu.Scale = new Vector2(1.0f/boardSize, 1.0f/boardSize);
+					promotionMenu.ZIndex = 1000;
+					return;
+				}
+			}
+			
 			gameState.RunMove(this.selectedSquare, square);
 			if (gameState.checkmate) {
 				this.GameOver();

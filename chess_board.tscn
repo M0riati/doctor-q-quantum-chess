@@ -54,17 +54,19 @@ offset = Vector2(0.095, 0.515)
 script = ExtResource("3_01178")
 
 [node name="CheckmateBlind" type="Node2D" parent="."]
+visible = false
 modulate = Color(1, 1, 1, 0)
 position = Vector2(600, 335)
 script = ExtResource("4_6cddq")
 
 [node name="Checkmate" type="Sprite2D" parent="CheckmateBlind"]
+position = Vector2(14, 4)
 texture = ExtResource("4_24de6")
 
 [node name="Label" type="Label" parent="CheckmateBlind"]
-offset_left = -475.0
-offset_top = -77.0
-offset_right = 412.0
-offset_bottom = 60.0
+offset_left = -530.0
+offset_top = -79.0
+offset_right = 357.0
+offset_bottom = 58.0
 text = "C H E C K M A T E"
 label_settings = SubResource("LabelSettings_6cddq")

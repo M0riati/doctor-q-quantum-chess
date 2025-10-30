@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml.Schema;
 using Godot;
 
@@ -129,7 +131,7 @@ public class GameState {
 	public bool stalemate => noValidMoves && !checkWhite && !checkBlack;
 	private List<Vector2I>[,] legalMoves;
 	public List<SpecialMove> specialMoves;
-	
+	public Type promoteTo = typeof(Queen);
 	
 	public GameState(int size) {
 		this.size = size;
@@ -304,7 +306,10 @@ public class GameState {
 				return;
 			}
 			GD.Print("Promotion");
-			SetAt(pos, new Queen(pawn.isWhite));
+			Piece promoted = Activator.CreateInstance(promoteTo) as Piece;
+			Debug.Assert(promoted != null, nameof(promoted) + " != null");
+			promoted.isWhite = pawn.isWhite;
+			SetAt(pos, promoted);
 		}
 	}
 	
