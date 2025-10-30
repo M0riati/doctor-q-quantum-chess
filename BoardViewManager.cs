@@ -7,7 +7,7 @@ public partial class BoardViewManager : Node2D {
 	public GameState gameState;
 	
 	public int boardSize = 8;
-	public Sprite2D chessBoardSprite;
+	public TextureButton chessBoardSprite;
 	public FadeIn gameOverScreen;
 	public AnnotationManager annotationManager;
 	public Dictionary<Vector2I, PieceSprite> positionToSprite = new();
@@ -126,32 +126,46 @@ public partial class BoardViewManager : Node2D {
 		positionToSprite.Remove(from);
 		positionToSprite[to] = sprite;
 	}
+
+	private Vector2 FlipBoardPosition(Vector2 unflipped) {
+		return boardOrientation * (unflipped - Vector2.One * 0.5f) + Vector2.One*0.5f;
+	}
 	
 	private Vector2 GetViewportBoardPosition(Vector2I position) {
-		return (new Vector2(position.Y, position.X) + Vector2.One * 0.5f) / boardSize - new Vector2(0.5f, 0.5f);
+		return FlipBoardPosition((new Vector2(position.Y, position.X) + Vector2.One * 0.5f) / boardSize);
 	}
 
 	private Vector2 GetViewportBoardPosition(int x, int y) {
 		return GetViewportBoardPosition(new Vector2I(x, y));
+	}
+
+	private Vector2I GetInternalBoardPosition(Vector2 position) {
+		position = FlipBoardPosition(position);
+		return new Vector2I((int)((position.Y)*boardSize), (int)((position.X)*boardSize));
 	}
 	
 	private static string ToAlgebraic(int x, int y) {
 		return $"{Convert.ToChar(97 + x)}{(y + 1)}";
 	}
 	
-	public override void _Input(InputEvent @event)
-	{
+	private void BoardInput(InputEvent @event) {
 		if (@event is InputEventMouseButton mouseEvent) {
 			if (!mouseEvent.Pressed) return;
-			var boardPosition = chessBoardSprite.GlobalTransform.AffineInverse().BasisXform(mouseEvent.Position-chessBoardSprite.Position);
-			boardPosition += Vector2.One*0.5f;
-			if (boardPosition.X < 1.0f && boardPosition.X > 0.0f && boardPosition.Y < 1.0f && boardPosition.Y > 0.0f) {
-				Select((int)(boardPosition.Y * boardSize), (int)(boardPosition.X * boardSize));
+			var boardPosition = mouseEvent.Position;
+			var internalPosition = GetInternalBoardPosition(boardPosition);
+			if (internalPosition.X >= 0 && internalPosition.X < boardSize && internalPosition.Y >= 0 && internalPosition.Y < boardSize) {
+				Select(internalPosition);
 			}
 		}
 	}
 
-	public void InitSprites() {
+	public void RepositionSprites() {
+		foreach (var (position, sprite) in positionToSprite) {
+			sprite.Position = (GetViewportBoardPosition(position));
+		}
+	}
+	
+	private void InitSprites() {
 		for (int x = 0; x < boardSize; x++) {
 			for (int y = 0; y < boardSize; y++) {
 				var piece = gameState.GetAt(x, y);
@@ -172,10 +186,11 @@ public partial class BoardViewManager : Node2D {
 	public override void _Ready() {
 		base._Ready();
 		this.legalSquares = new();
-		chessBoardSprite = GetNode<Sprite2D>("/root/ChessBoard/ChessBoardSprite");
+		chessBoardSprite = GetNode<TextureButton>("/root/ChessBoard/ChessBoardSprite");
 		annotationManager = GetNode<AnnotationManager>("/root/ChessBoard/AnnotationManager");
 		gameOverScreen = GetNode<FadeIn>("/root/ChessBoard/CheckmateBlind");
-		annotationManager.transform = chessBoardSprite.GlobalTransform;
+		annotationManager.transform = chessBoardSprite.GetGlobalTransform();
+		this.chessBoardSprite.GuiInput += BoardInput;
 		gameState = new GameState(boardSize);
 		this.BaseSetup();
 		InitSprites();

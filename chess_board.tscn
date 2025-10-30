@@ -13,10 +13,10 @@ shader_parameter/num_cells = 8
 shader_parameter/light_square = Color(0.92396677, 0.970936, 0.893543, 1)
 shader_parameter/dark_square = Color(0.07087421, 0.2056323, 0.22893974, 1)
 
-[sub_resource type="Gradient" id="Gradient_01178"]
+[sub_resource type="Gradient" id="Gradient_6cddq"]
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_24de6"]
-gradient = SubResource("Gradient_01178")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ftctk"]
+gradient = SubResource("Gradient_6cddq")
 width = 1
 
 [sub_resource type="LabelSettings" id="LabelSettings_6cddq"]
@@ -32,11 +32,19 @@ z_index = 5
 texture_filter = 6
 script = ExtResource("1_p4xb6")
 
-[node name="ChessBoardSprite" type="Sprite2D" parent="."]
+[node name="ChessBoardSprite" type="TextureButton" parent="."]
 material = SubResource("ShaderMaterial_p4xb6")
-position = Vector2(564, 320)
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 232.99998
+offset_top = -1.9999999
+offset_right = 233.99998
+offset_bottom = -0.9999999
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(668.1778, 641.6514)
-texture = SubResource("GradientTexture1D_24de6")
+texture_normal = SubResource("GradientTexture1D_ftctk")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(574, 320)
