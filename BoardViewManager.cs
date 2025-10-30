@@ -61,11 +61,27 @@ public partial class BoardViewManager : Node2D {
 		annotationManager.circles = circles;
 		annotationManager.QueueRedraw();
 	}
+
+	private void Select(Vector2I position) {
+		Select(position.X, position.Y);
+	}
+
 	private void SwitchOrientation() {
 		this.boardOrientation *= -1;
 		this.RepositionSprites();
 	}
+
+	private void ConcludePromotionMove(Vector2I from, Vector2I to, Type promotionType) {
+		gameState.promoteTo = promotionType;
+		gameState.RunMove(from, to);
+		if (gameState.checkmate) {
+			this.GameOver();
+		}
 		this.SwitchOrientation();
+		this.Move(from, to);
+		positionToSprite[to].Texture = promotionType.GetField(gameState.GetAt(to).isWhite ? "whiteTexture" : "blackTexture").GetValue(null) as Texture2D;
+		this.ResetSelection();
+	}
 	
 	private void Select(int x, int y) {
 		var piece = gameState.GetAt(x, y);
